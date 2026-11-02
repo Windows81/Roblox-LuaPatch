@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>luapatch addresses</title>
+<script src="capstone.js"></script>
+<script src="capstone-wasm-b64.js"></script>
+<link rel="stylesheet" href="vendor/highlight.min.css">
+<style>
+:root { color-scheme: dark; }
+html { background: #1e1e1e; color: #d4d4d4; }
+body { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; font: 15px/1.55 system-ui, sans-serif; }
+h1, h2 { font-weight: 600; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.15rem; margin-top: 2rem; border-bottom: 1px solid #2d2d2d; padding-bottom: .3rem; }
+p { color: #b8b8b8; }
+a { color: #4daafc; }
+code:not(pre code) { background: #2d2d2d; border: 1px solid #3c3c3c; border-radius: 3px; padding: .1em .35em; }
+table { border-collapse: collapse; margin-top: .5rem; font-size: .9rem; }
+th, td { border: 1px solid #3c3c3c; padding: .35em .6em; vertical-align: top; text-align: left; }
+th { background: #252526; }
+input[type=file] { color: #d4d4d4; }
+p.slots { display: flex; gap: 2rem; flex-wrap: wrap; }
+p.slots label { display: flex; gap: .5rem; align-items: center; color: #d4d4d4; }
+button { font: inherit; color: #d4d4d4; background: #2d2d2d; border: 1px solid #3c3c3c; border-radius: 4px; padding: .45em 1.1em; cursor: pointer; }
+button:hover:not(:disabled) { background: #3a3a3a; border-color: #4daafc; }
+button:disabled { opacity: .45; cursor: default; }
+#status { color: #9cdcfe; }
+pre.code { margin: 0; }
+pre.code code.hljs { display: block; padding: 1em; border: 1px solid #3c3c3c; border-radius: 4px; overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<h1>luapatch addresses</h1>
+
+<p class="slots">
+<label>player <input type="file" id="file-player" data-role="CLIENT"></label>
+<label>rcc <input type="file" id="file-rcc" data-role="SERVER"></label>
+</p>
+
+<p><button type="button" id="run" disabled>analyze</button></p>
+<p id="status">waiting for a file</p>
+
+<h2>addresses</h2>
+<table border="1" id="found" hidden>
+<tr><th>file</th><th>build</th><th>constant</th><th>address</th></tr>
+</table>
+
+<h2>log</h2>
+<pre class="code"><code id="log" class="language-cpp">-</code></pre>
+
+<script src="vendor/highlight.min.js"></script>
+<script src="format.js"></script>
+<script src="derive.js"></script>
+<script>
+const hex = (v) => "0x" + v.toString(16).toUpperCase().padStart(8, "0");
+
+const ORDER = [
+    ["CLIENT", "ADDRESS_LUAVM__LOAD", "LuaVM__load"],
+    ["CLIENT", "ADDRESS_LUAVM__STRING_ASSIGN", "stringAssign"],
+    ["CLIENT", "ADDRESS_CORESCRIPTS", "gCoreScripts"],
+    ["CLIENT", "OFFSET_PROTECTEDSTRING__BYTECODE", "bytecodeOffset"],
+    ["SERVER", "ADDRESS_LUASERIALIZER__WRITE", "LuaSerializer__write"],
+    ["SERVER", "ADDRESS_LUAVM__STRING_ASSIGN", "stringAssign"]
+];
+
+let capstone = null;
+const boot = () => {
+    if (!capstone) {
+        capstone = (async () => {
+            if (!window.__CAPSTONE_WASM) return MCapstone();
+            const raw = atob(window.__CAPSTONE_WASM);
+            const bin = new Uint8Array(raw.length);
+            for (let k = 0; k < raw.length; k++) bin[k] = raw.charCodeAt(k);
+            return MCapstone({ wasmBinary: bin });
+        })();
+    }
+    return capstone;
+};
+
+const roleOf = (derived) => {
+    const c = derived.client || {}, s = derived.server || {};
+    if (c.LuaVM__load !== undefined || c.bytecodeOffset !== undefined) return "CLIENT";
+    if (s.LuaSerializer__write !== undefined) return "SERVER";
+    return Object.keys(c).length >= Object.keys(s).length ? "CLIENT" : "SERVER";
+};
+
+const describeScramble = (derived) => {
+    const s = derived.scramble;
+    if (!s) return "unknown";
+    return s.beforeCallScramble ? "define" : "not needed";
+};
+
+const inputs = Array.from(document.querySelectorAll("input[type=file]"));
+
+const run = async () => {
+    const picked = inputs
+        .map((input) => ({ file: (input.files || [])[0], role: input.dataset.role }))
+        .filter((x) => x.file);
+    if (!picked.length) return;
+
+    const status = document.getElementById("status");
+    const table = document.getElementById("found");
+    while (table.rows.length > 1) table.deleteRow(1);
+
+    const results = [];
+    for (let n = 0; n < picked.length; ++n) {
+        const { file, role } = picked[n];
+        status.textContent = "analyzing " + file.name + " as " + role.toLowerCase() +
+                             " (" + (n + 1) + "/" + picked.length + ")";
+        try {
+            const u8 = new Uint8Array(await file.arrayBuffer());
+            const started = performance.now();
+            const r = await analyze(u8, boot);
+            results.push({ name: file.name, r, role, detected: roleOf(r.derived),
+                           elapsed: performance.now() - started });
+        } catch (error) {
+            results.push({ name: file.name, error: error.message });
+        }
+    }
+
+    const ok = results.filter((x) => x.r);
+    const failed = results.filter((x) => !x.r);
+    status.textContent = ok.length + " analyzed" + (failed.length ? ", " + failed.length + " failed" : "") +
+        (ok.length ? " - " + ok.map((x) => x.role.toLowerCase()).join(" + ") : "");
+
+    for (const item of results) {
+        if (!item.r) {
+            const row = table.insertRow(-1);
+            row.insertCell(-1).textContent = item.name;
+            row.insertCell(-1).textContent = "?";
+            row.insertCell(-1).textContent = "failed";
+            row.insertCell(-1).textContent = item.error;
+            row.insertCell(-1).textContent = "";
+            row.insertCell(-1).textContent = "";
+            continue;
+        }
+
+        const { r, role, name } = item;
+        const client = r.derived.client, server = r.derived.server;
+        const isClient = role === "CLIENT";
+
+        for (const [build, constant, key] of ORDER) {
+            if ((build === "CLIENT") !== isClient) continue;
+            const value = build === "CLIENT" ? client[key] : server[key];
+
+            const row = table.insertRow(-1);
+            row.insertCell(-1).textContent = name;
+            row.insertCell(-1).textContent = build;
+            row.insertCell(-1).textContent = constant;
+            row.insertCell(-1).textContent = value === undefined ? "not derived"
+                : (key === "bytecodeOffset" ? "0x" + value.toString(16).toUpperCase() : hex(value));
+        }
+
+        {
+            const numKey = isClient ? client.numKey : server.numKey;
+            const row = table.insertRow(-1);
+            row.insertCell(-1).textContent = name;
+            row.insertCell(-1).textContent = role;
+            row.insertCell(-1).textContent = "ADDRESS_LUAVM__NUM_KEY";
+            row.insertCell(-1).textContent = numKey === undefined ? "not derived" : hex(numKey);
+        }
+
+        const scramble = describeScramble(r.derived);
+        {
+            const row = table.insertRow(-1);
+            row.insertCell(-1).textContent = name;
+            row.insertCell(-1).textContent = role;
+            row.insertCell(-1).textContent = "BEFORE_CALL_SCRAMBLE";
+            row.insertCell(-1).textContent = scramble;
+        }
+    }
+
+    const byRole = {};
+    for (const item of ok) if (!byRole[item.role]) byRole[item.role] = item;
+
+    const scrambleSource = byRole.CLIENT || byRole.SERVER;
+    const beforeCallScramble = !!(scrambleSource && scrambleSource.r.derived.scramble &&
+                                  scrambleSource.r.derived.scramble.beforeCallScramble);
+
+    const text = cppHeader(byRole.CLIENT ? byRole.CLIENT.r.derived.client : null,
+                           byRole.SERVER ? byRole.SERVER.r.derived.server : null,
+                           beforeCallScramble);
+
+    table.hidden = false;
+    document.getElementById("log").innerHTML = hljs.highlight(text, { language: "cpp", ignoreIllegals: true }).value;
+};
+
+const runButton = document.getElementById("run");
+const refresh = () => {
+    const names = inputs.map((input) => (input.files || [])[0]).filter(Boolean).map((file) => file.name);
+
+    runButton.disabled = names.length === 0;
+    if (names.length) document.getElementById("status").textContent = "ready: " + names.join(", ");
+};
+
+for (const input of inputs) input.addEventListener("change", refresh);
+runButton.addEventListener("click", run);
+refresh();
+</script>
+
+</body>
+</html>

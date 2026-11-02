@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="CLIENT|Win32">
+      <Configuration>CLIENT</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="SERVER|Win32">
+      <Configuration>SERVER</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}</ProjectGuid>
+    <RootNamespace>luapatch</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <VcpkgTriplet>x86-windows-static</VcpkgTriplet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
+    <TargetName>luapatch</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <PreprocessorDefinitions>$(Configuration);WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)third_party\lua-5.1.4\src;$(SolutionDir)vcpkg_installed\$(VcpkgTriplet)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>minhook.x32.lib;lz4.lib;xxhash.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)vcpkg_installed\$(VcpkgTriplet)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='CLIENT'">
+    <Link>
+      <AdditionalDependencies>lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\framework.h" />
+    <ClInclude Include="Include\Lua\opcodes.h" />
+    <ClInclude Include="Include\pch.h" />
+    <ClInclude Include="Include\Configuration.h" />
+    <ClInclude Include="Include\Helpers.h" />
+    <ClInclude Include="Include\Patches.h" />
+    <ClInclude Include="Include\Hooks\LuaVM.h" />
+    <ClInclude Include="Include\Hooks\LuaSerializer.h" />
+    <ClInclude Include="Include\Lua\rsb1.h" />
+    <ClInclude Include="Include\Lua\scramble.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Patches.cpp" />
+    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="Lua\rsb1.cpp" />
+    <ClCompile Include="Hooks\LuaVM.cpp" />
+    <ClCompile Include="Hooks\LuaSerializer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lua5.1\lua5.1.vcxproj" Condition="'$(Configuration)'=='CLIENT'">
+      <Project>{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

@@ -1,0 +1,34 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luapatch", "luapatch\luapatch.vcxproj", "{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001} = {7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua5.1", "lua5.1\lua5.1.vcxproj", "{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CLIENT|x86 = CLIENT|x86
+		SERVER|x86 = SERVER|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}.CLIENT|x86.ActiveCfg = CLIENT|Win32
+		{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}.CLIENT|x86.Build.0 = CLIENT|Win32
+		{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}.SERVER|x86.ActiveCfg = SERVER|Win32
+		{6C1F0A11-2B44-4E71-9E31-9A2B7C5D1000}.SERVER|x86.Build.0 = SERVER|Win32
+		{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}.CLIENT|x86.ActiveCfg = CLIENT|Win32
+		{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}.CLIENT|x86.Build.0 = CLIENT|Win32
+		{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}.SERVER|x86.ActiveCfg = SERVER|Win32
+		{7A3E1C42-9D55-4B18-8F20-3C6D5E9A2001}.SERVER|x86.Build.0 = SERVER|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CD151EE-7C1C-48D5-AF46-0EDE0859AA63}
+	EndGlobalSection
+EndGlobal

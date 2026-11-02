@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{00000000-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{00000001-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hooks">
+      <UniqueIdentifier>{00000002-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Hooks">
+      <UniqueIdentifier>{00000003-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua">
+      <UniqueIdentifier>{16bab752-2f00-4ff8-994b-d517d2782d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lua">
+      <UniqueIdentifier>{9adb4ea5-2fdd-4e24-a036-bb5dc4cafebe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Patches.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Hooks\LuaVM.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Hooks\LuaSerializer.h">
+      <Filter>Header Files\Hooks</Filter>
+    </ClInclude>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\LuaVM.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClInclude Include="Include\Lua\opcodes.h">
+      <Filter>Header Files\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lua\rsb1.h">
+      <Filter>Header Files\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lua\scramble.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Hooks\LuaSerializer.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\rsb1.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
