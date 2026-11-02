@@ -9,7 +9,7 @@ We can use Roblox's trust in the server to achieve server-to-client RCE using ma
 
 ## The Patch
 
-**A patch is ready for versions 2014L thru 2016L (tested on Kanvas clients). You can download it [here](https://github.com/Windows81/Roblox-LuaPatch/archive/refs/heads/main.zip).**
+**A patch is ready for versions 2014L thru 2016L (tested on Kanvas clients). You can access it [here](https://windows81.github.io/Roblox-LuaPatch/tools/) or [compile the code yourself](https://github.com/Windows81/Roblox-LuaPatch/archive/refs/heads/main.zip).**
 
 The `./tools/index.html` contains an auto address grabber to help you. As of 2026-10-31, Kanvas released their own patch (i.e., the TB3 Bytecode clients patch \[sic\]).
 
@@ -32,7 +32,7 @@ _So what is the problem? Some random guy can make my client run bytecode when I 
 
 It is not in the original authors' interest to release a PoC that can be weaponized to compromise people's systems.
 
-However, if an exploit becomes known to VisualPlugin, he'll post it straight away on this GitHub page.
+However, if a public exploit becomes known to VisualPlugin, he'll post it straight away on this GitHub page.
 
 ## The History of Bytecode on Roblox
 
@@ -66,4 +66,6 @@ This works perfectly. There are no issues. Roblox will always host the server, r
 
 ## Disclosure Disclaimer
 
-The original author(s) planned to release this writeup on 2026-10-31, after they had sent a patch to the Kanvas developers on 2026-10-30. After announcing the risk to people, someone had decided to publicly release a vibecoded exploit exploiting the vulnerability. Great! This is the reason why this writeup's release was released early.
+The original author(s) planned to release this writeup on 2026-10-31, after they had sent a patch to the Kanvas developers on 2026-10-30.
+
+Very soon after announcing the risk to people, someone released a vibecoded exploit. For this reason, the writeup was released ahead of shcedule.
