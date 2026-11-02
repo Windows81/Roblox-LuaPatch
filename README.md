@@ -3,6 +3,8 @@
 
 # "The End of the Launcher"
 
+https://github.com/user-attachments/assets/16125423-9098-428b-8fd5-95c7b91b565c
+
 We can use Roblox's trust in the server to achieve server-to-client RCE using malicious bytecode on clients versioned late 2014 and above.
 
 ## The history of Bytecode on Roblox
