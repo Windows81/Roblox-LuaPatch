@@ -1,5 +1,5 @@
 > [!TIP]
-> This _README.md_ file is copied from https://my-thos.github.io/the-end-of-the-launcher/ with revisions to improve clarity. Fortunately, the original text was very clear and easy to follow. I like that!
+> This _README.md_ file is copied from https://my-thos.github.io/the-end-of-the-launcher/ with revisions to improve clarity. Fortunately, not much was needed to be done as the original text was very clear and easy to follow. I like that!
 
 # "The End of the Launcher"
 
@@ -9,7 +9,7 @@ We can use Roblox's trust in the server to achieve server-to-client RCE using ma
 
 ## The Patch
 
-**A patch is ready for versions 2014L thru 2016L (tested on Kanvas clients). You can access it [here](https://windows81.github.io/Roblox-LuaPatch/tools/) or [compile the code yourself](https://github.com/Windows81/Roblox-LuaPatch/archive/refs/heads/main.zip).**
+**A patching tool is ready for versions from late 2014 thru late 2016 (tested on Kanvas clients). You can access it [here](https://windows81.github.io/Roblox-LuaPatch/tools/) or [compile the code yourself](https://github.com/Windows81/Roblox-LuaPatch/archive/refs/heads/main.zip).**
 
 The `./tools/index.html` contains an auto address grabber to help you. As of 2026-10-31, Kanvas released their own patch (i.e., the TB3 Bytecode clients patch \[sic\]).
 
@@ -18,7 +18,7 @@ This patch works by making it so instead of sending bytecode to the client, the 
 Patching this gets exponentially harder over the years due to stuff like the Dynamic Bot Challenge (that runs bytecode on your client from the server to confirm you aren't a bot), random intentional messups of the Lua VM to stop exploiters, Luau, etc.
 
 > [!NOTE] 
-> This doesn't affect ORRH, or Novetus, although Kanvas was affected for Roblox versions after 2014M (prior to 2026-10-31). This also doesn't just affect Kanvas, this affects anything that allows you to host/join on any client version after 2014M (2014L is affected). Yes, any local_rcc server or variation of local_rcc. Yes, if it were even possible to host latest Roblox, it would be affected. As said before, **You should only be playing servers hosted by people you trust.**
+> This doesn't affect ORRH, or Novetus, although Kanvas was affected for Roblox versions after mid-2014 and prior to 2026-10-31. This also doesn't just affect Kanvas, this affects anything that allows you to host/join on any client version after mid-2014, _including_ by late 2014 or after. Yes, any _local_rcc_ server or variation of _local_rcc_. Even Rōblox Freedom Distribution may be affected. Yes, if it were even possible to host latest Roblox, it would be affected. As said before, **You should only be playing servers hosted by people you trust.**
 
 ## The "Vulnerability"
 
